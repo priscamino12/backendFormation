@@ -23,7 +23,7 @@ exports.getAllUsers = async (req, res) => {
 
             // Hasher le mot de passe
             const hashedPassword = await bcrypt.hash(mdp, 10);
-
+            
             // Insérer l'utilisateur
             await pool.query("INSERT INTO user (nom, email, mdp) VALUES (?, ?, ?)", [nom, email, hashedPassword]);
 
