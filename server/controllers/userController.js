@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 
 exports.getAllUsers = async (req, res) => {
     try {
-        const [rows] = await pool.query("SELECT id, nom, email,mdp, created_at FROM user");
+        const [rows] = await pool.query("SELECT id, pseudo, email, mdp, created_at FROM user");
         res.json({ users: rows });
     } catch (err) {
         console.error(err);
@@ -14,7 +14,7 @@ exports.getAllUsers = async (req, res) => {
     // Créer un nouvel utilisateur
     exports.createUser = async (req, res) => {
         try {
-            const { nom, email, mdp } = req.body;
+            const { pseudo, email, mdp } = req.body;
 
             const [existing] = await pool.query("SELECT * FROM user WHERE email = ?", [email]);
             if (existing.length > 0) {
@@ -25,7 +25,7 @@ exports.getAllUsers = async (req, res) => {
             const hashedPassword = await bcrypt.hash(mdp, 10);
             
             // Insérer l'utilisateur
-            await pool.query("INSERT INTO user (nom, email, mdp) VALUES (?, ?, ?)", [nom, email, hashedPassword]);
+            await pool.query("INSERT INTO user (pseudo, email, mdp) VALUES (?, ?, ?)", [pseudo, email, hashedPassword]);
 
             res.status(201).json({ msg: "Utilisateur créé avec succès" });
         } catch (err) {
@@ -38,7 +38,7 @@ exports.getAllUsers = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nom, email, mdp } = req.body;
+    const { pseudo, email, mdp } = req.body;
 
     // Vérifier si l'utilisateur existe
     const [existing] = await pool.query("SELECT * FROM user WHERE id = ?", [id]);
@@ -55,8 +55,8 @@ exports.updateUser = async (req, res) => {
 
     // Mettre à jour l'utilisateur
     await pool.query(
-      "UPDATE user SET nom = ?, email = ?, mdp = ? WHERE id = ?",
-      [nom || existing[0].nom, email || existing[0].email, hashedPassword, id]
+      "UPDATE user SET pseudo = ?, email = ?, mdp = ? WHERE id = ?",
+      [pseudo || existing[0].pseudo, email || existing[0].email, hashedPassword, id]
     );
 
     res.json({ msg: "Utilisateur mis à jour avec succès" });

@@ -4,7 +4,7 @@ const pool = require("../models/db");
 exports.getAllClients = async (req, res) => {
     try {
         const [rows] = await pool.query("SELECT id, nom, prenom, contact, created_at FROM client");
-        res.json({ users: rows });
+        res.json({ client: rows });
     } catch (err) {
         console.error(err)
         res.status(500).json({ msg: "Erreur de recuperation de clients", error: err.message });
